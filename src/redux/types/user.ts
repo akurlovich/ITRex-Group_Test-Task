@@ -1,4 +1,4 @@
-import { IArticles } from "../../ts/types/user";
+import { IArticles, IUsers } from "../../ts/types/user";
 
 export interface IUserArticle {
   author: string;
@@ -8,11 +8,13 @@ export interface IUserArticle {
 }
 
 export interface IUserState {
-  posts: IArticles[];
-  post: IUserArticle;
-  users: string[];
-  loading: boolean;
-  cards: number[];
+  users: IUsers[];
+  isLoad: boolean;
+  // posts: IArticles[];
+  // post: IUserArticle;
+  // users: string[];
+  // loading: boolean;
+  // cards: number[];
 }
 
 export enum UserActionType {
@@ -20,6 +22,7 @@ export enum UserActionType {
   GET_POST = 'GET_POST',
   GET_USERS_SUCCESS = 'GET_USERS_SUCCESS',
   GET_CARDS = 'GET_CARDS',
+  GET_USERS = 'GET_USERS',
 }
 
 interface IGetPosts {
@@ -28,8 +31,8 @@ interface IGetPosts {
 }
 
 interface IGetUsers {
-  type: UserActionType.GET_POST,
-  payload: IUserArticle;
+  type: UserActionType.GET_USERS,
+  payload: IUsers[];
 }
 
 interface IGetUsersSuccess {

@@ -1,24 +1,39 @@
+import { IUsers } from "../../../ts/types/user"
 import { IUserArticle, IUserState, UserAction, UserActionType } from "../../types/user"
 
-const initialState: IUserState = {
-  posts: [],
-  post: {} as IUserArticle,
+// const initialState: IUserState = {
+//   posts: [],
+//   post: {} as IUserArticle,
+//   users: [],
+//   loading: false,
+//   cards: [],
+// }
+
+const initialUsersState: IUserState = {
   users: [],
-  loading: false,
-  cards: [],
+  isLoad: false,
+  // adress: {
+  //   streetAddress: '',
+  //   city: '',
+  //   state: '',
+  //   zip: '',
+  // },
+  // description: '',
+  // email: '',
+  // firstName: '',
+  // id: 0,
+  // lastName: '',
+  // phone: '',
 }
 
-export const userReducer = (state = initialState, action: UserAction): IUserState => {
+export const userReducer = (state = initialUsersState, action: UserAction): IUserState => {
   switch (action.type) {
-    case UserActionType.GET_POSTS:
+    case UserActionType.GET_USERS:
       // return {posts: action.payload, users: [], loading: true, cards: []}
-      return {...state, posts: action.payload}
-    case UserActionType.GET_POST:
-      return {...state, post: action.payload}
+      return {...state, users: action.payload}
     case UserActionType.GET_USERS_SUCCESS:
-      return {...state}
-    case UserActionType.GET_CARDS:
-      return {...state}
+      // return {posts: action.payload, users: [], loading: true, cards: []}
+      return {...state, isLoad: action.payload}
     default:
       return state;
   }

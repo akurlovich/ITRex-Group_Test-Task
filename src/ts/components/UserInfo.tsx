@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { IArticles } from '../types/user';
+import { IArticles, IUsers } from '../types/user';
 
 interface IArticlesBlock {
-  articles: IArticles[];
+  articles: IUsers[];
 }
 
 const UserInfo: FC<IArticlesBlock> = ({articles}) => {
@@ -20,18 +20,16 @@ const UserInfo: FC<IArticlesBlock> = ({articles}) => {
               </td>
               <td>Image</td>
             </tr>
-            {articles.map(({author, title, publishedAt, urlToImage, source}, index: number) => {
-              return (
-                <tr key={index} >
-                    <td>{title}</td>
-                    <td>{author}</td>
-                    <td>{publishedAt}</td>
-                    <td>
-                      <img width={200} src={urlToImage} alt={title} />
-                    </td>
-                </tr>
-              )
-            })}
+            {/* {articles.map((item, index) => {
+              return ( */}
+                {/* <tr key={articles[0].id} >
+                    <td>{articles[0].adress}</td>
+                    <td>{articles[0].firstName}</td>
+                    <td>{articles[0].lastName}</td>
+                    
+                </tr> */}
+              {/* )
+            })} */}
           </table>
         </div>
         )
