@@ -9,6 +9,14 @@ import UserInfo from './UserInfo';
 
 export const API_KEY = '1f1508a8866b41e6b9479917c6ee1b34';
 
+interface ISotrItems {
+  sortID: boolean;
+  sortFirst: boolean;
+  sortLast: boolean;
+  sortEmail: boolean;
+  sortPhone: boolean;
+}
+
 const MainBlock: FC = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -20,8 +28,14 @@ const MainBlock: FC = () => {
   const [sortUp, setSortUp] = useState(false);
   const [sortUpName, setSortUpName] = useState(false);
 
+  const [sortByItems, setSortByItems] = useState<ISotrItems>({sortID: false, sortEmail: false, sortFirst: false, sortLast: false, sortPhone: false});
+  // setSortByItems({
+  //   ...sortByItems, sortID: true
+  // })
+
   const {users, isLoad} = useTypedSelector(state => state.user);
   const dispatch = useDispatch();
+
 
   async function getAllAsync() {
     const res = await fetch('https://itrex-react-lab-files.s3.eu-central-1.amazonaws.com/react-test-api.json');
@@ -86,54 +100,105 @@ const MainBlock: FC = () => {
       //   setIsLoading(false);
       // }
   }
+  function sortItems(arr: IUsers[], type: string, method: string) {
+    switch (type) {
+      case 'id':
+        console.log('id');
+        if (method === 'asc') {
+          arr.sort((a, b) => a.id > b.id ? 1 : -1);
+          console.log('id2');
+        } else {
+          arr.sort((a, b) => a.id < b.id ? 1 : -1);
+        }
+        break;
+      case 'first':
+        if (method === 'asc') {
+          arr.sort((a, b) => a.firstName > b.firstName ? 1 : -1);
+        } else {
+          arr.sort((a, b) => a.firstName < b.firstName ? 1 : -1);
+        }
+        break;
+      case 'last':
+        if (method === 'asc') {
+          arr.sort((a, b) => a.lastName > b.lastName ? 1 : -1);
+        } else {
+          arr.sort((a, b) => a.lastName < b.lastName ? 1 : -1);
+        }
+        break;
+      case 'email':
+        if (method === 'asc') {
+          arr.sort((a, b) => a.email > b.email ? 1 : -1);
+        } else {
+          arr.sort((a, b) => a.email < b.email ? 1 : -1);
+        }
+        break;
+      case 'phone':
+        if (method === 'asc') {
+          arr.sort((a, b) => a.phone > b.phone ? 1 : -1);
+        } else {
+          arr.sort((a, b) => a.phone < b.phone ? 1 : -1);
+        }
+        break;
+    
+      default:
+        break;
+    }
+    // arr.sort((a, b) => a.id > b.id ? 1 : -1);
+  }
 
-  function sortByUp(arr: IUsers[]) {
-    arr.sort((a, b) => a.id > b.id ? 1 : -1);
-  }
-  function sortByDown(arr: IUsers[]) {
-    arr.sort((a, b) => a.id < b.id ? 1 : -1);
-  }
+  // function sortByUp(arr: IUsers[]) {
+  //   arr.sort((a, b) => a.id > b.id ? 1 : -1);
+  // }
+  // function sortByDown(arr: IUsers[]) {
+  //   arr.sort((a, b) => a.id < b.id ? 1 : -1);
+  // }
 
-  function sortByFirstUp(arr: IUsers[]) {
-    arr.sort((a, b) => a.firstName > b.firstName ? 1 : -1);
-  }
-  function sortByFirstDown(arr: IUsers[]) {
-    arr.sort((a, b) => a.firstName < b.firstName ? 1 : -1);
-  }
+  // function sortByFirstUp(arr: IUsers[]) {
+  //   arr.sort((a, b) => a.firstName > b.firstName ? 1 : -1);
+  // }
+  // function sortByFirstDown(arr: IUsers[]) {
+  //   arr.sort((a, b) => a.firstName < b.firstName ? 1 : -1);
+  // }
 
   const sortId = () => {
-    if (sortUp) {
-      sortByUp(users);
+    if (sortByItems.sortID) {
+      sortItems(users, 'id', 'asc');
       dispatch({
         type: UserActionType.GET_USERS, payload: users
       });
-      setSortUp(!sortUp);
+      // setSortUp(!sortUp);
+      setSortByItems({
+        ...sortByItems, sortID: false
+      });
     } else {
-      sortByDown(users);
+      sortItems(users, 'id', 'desc');
       dispatch({
         type: UserActionType.GET_USERS, payload: users
       });
-      setSortUp(!sortUp);
+      setSortByItems({
+        ...sortByItems, sortID: true
+      });
     }
-    
-    // setUsersAll(usersAll);
-    // console.log(users);
     
   }
 
   const sortFirstName = () => {
-    if (sortUpName) {
-      sortByFirstUp(users);
+    if (sortByItems.sortFirst) {
+      sortItems(users, 'first', 'asc');
       dispatch({
         type: UserActionType.GET_USERS, payload: users
       });
-      setSortUpName(!sortUpName);
+      setSortByItems({
+        ...sortByItems, sortFirst: false
+      });
     } else {
-      sortByFirstDown(users);
+      sortItems(users, 'first', 'desc');
       dispatch({
         type: UserActionType.GET_USERS, payload: users
       });
-      setSortUpName(!sortUpName);
+      setSortByItems({
+        ...sortByItems, sortFirst: true
+      });
     }
   }
 
@@ -165,13 +230,13 @@ const MainBlock: FC = () => {
               <tr>
                 <td onClick={sortId}>
                   Id
-                  {sortUp && <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
-                  {!sortUp && <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
+                  {sortByItems.sortID && <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
+                  {!sortByItems.sortID && <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
                 </td>
                 <td onClick={sortFirstName}>
                   First name
-                  {sortUpName && <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
-                  {!sortUpName && <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
+                  {sortByItems.sortFirst && <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
+                  {!sortByItems.sortFirst && <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
                 </td>
                 <td>Last name</td>
                 <td>Email</td>
