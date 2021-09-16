@@ -18,6 +18,7 @@ const MainBlock: FC = () => {
   const [usersAll, setUsersAll] = useState<IUsers[]>([]);
 
   const [sortUp, setSortUp] = useState(false);
+  const [sortUpName, setSortUpName] = useState(false);
 
   const {users, isLoad} = useTypedSelector(state => state.user);
   const dispatch = useDispatch();
@@ -86,13 +87,21 @@ const MainBlock: FC = () => {
       // }
   }
 
+  function sortByUp(arr: IUsers[]) {
+    arr.sort((a, b) => a.id > b.id ? 1 : -1);
+  }
+  function sortByDown(arr: IUsers[]) {
+    arr.sort((a, b) => a.id < b.id ? 1 : -1);
+  }
+
+  function sortByFirstUp(arr: IUsers[]) {
+    arr.sort((a, b) => a.firstName > b.firstName ? 1 : -1);
+  }
+  function sortByFirstDown(arr: IUsers[]) {
+    arr.sort((a, b) => a.firstName < b.firstName ? 1 : -1);
+  }
+
   const sortId = () => {
-    function sortByUp(arr: IUsers[]) {
-      arr.sort((a, b) => a.id > b.id ? 1 : -1);
-    }
-    function sortByDown(arr: IUsers[]) {
-      arr.sort((a, b) => a.id < b.id ? 1 : -1);
-    }
     if (sortUp) {
       sortByUp(users);
       dispatch({
@@ -110,6 +119,22 @@ const MainBlock: FC = () => {
     // setUsersAll(usersAll);
     // console.log(users);
     
+  }
+
+  const sortFirstName = () => {
+    if (sortUpName) {
+      sortByFirstUp(users);
+      dispatch({
+        type: UserActionType.GET_USERS, payload: users
+      });
+      setSortUpName(!sortUpName);
+    } else {
+      sortByFirstDown(users);
+      dispatch({
+        type: UserActionType.GET_USERS, payload: users
+      });
+      setSortUpName(!sortUpName);
+    }
   }
 
   const handlerUser = (email: string) => {
@@ -135,23 +160,36 @@ const MainBlock: FC = () => {
       {/* {usersAll.length ? <div>{usersAll[0].email}</div>} */}
       {isLoad ? (
         <div>
-          <table style={{border: '1px solid black'}}>
+          <table style={{border: '1px solid black', borderCollapse: 'collapse'}}>
             <tbody>
               <tr>
-                <td>Title</td>
-                <td>Author</td>
-                <td>
-                  Published at
+                <td onClick={sortId}>
+                  Id
+                  {sortUp && <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
+                  {!sortUp && <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
                 </td>
-                <td onClick={sortId}>id</td>
+                <td onClick={sortFirstName}>
+                  First name
+                  {sortUpName && <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
+                  {!sortUpName && <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
+                </td>
+                <td>Last name</td>
+                <td>Email</td>
+                <td>Phone</td>
+                <td>State</td>
               </tr>
-              {users.map(({firstName, lastName, email, id}, index: number) => {
+              {users.map(({firstName, lastName, email, id, phone, adress}, index: number) => {
                 return (
-                  <tr key={index.toString()} onClick={() => handlerUser(email)}>
+                  <tr
+                    key={index.toString()}
+                    onClick={() => handlerUser(email)}
+                    style={{border: '1px solid black'}}>
+                      <td>{id}</td>
                       <td>{firstName}</td>
                       <td>{lastName}</td>
                       <td>{email}</td>
-                      <td>{id}</td>
+                      <td>{phone}</td>
+                      <td>{adress.state}</td>
                   </tr>
                 )
               })}
