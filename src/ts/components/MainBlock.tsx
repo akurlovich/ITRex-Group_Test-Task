@@ -25,6 +25,8 @@ const MainBlock: FC = () => {
 
   const [usersAll, setUsersAll] = useState<IUsers[]>([]);
 
+  const [userItem, setUserItem] = useState<IUsers>();
+
   const [sortUp, setSortUp] = useState(false);
   const [sortUpName, setSortUpName] = useState(false);
 
@@ -160,7 +162,7 @@ const MainBlock: FC = () => {
   //   arr.sort((a, b) => a.firstName < b.firstName ? 1 : -1);
   // }
 
-  const sortId = () => {
+  const handlerSortId = () => {
     if (sortByItems.sortID) {
       sortItems(users, 'id', 'asc');
       dispatch({
@@ -182,7 +184,7 @@ const MainBlock: FC = () => {
     
   }
 
-  const sortFirstName = () => {
+  const handlerSortFirstName = () => {
     if (sortByItems.sortFirst) {
       sortItems(users, 'first', 'asc');
       dispatch({
@@ -202,8 +204,8 @@ const MainBlock: FC = () => {
     }
   }
 
-  const handlerUser = (email: string) => {
-    console.log(email);
+  const handlerUser = (item: IUsers) => {
+    setUserItem(item);
   }
 
   return (
@@ -228,12 +230,12 @@ const MainBlock: FC = () => {
           <table style={{border: '1px solid black', borderCollapse: 'collapse'}}>
             <tbody>
               <tr>
-                <td onClick={sortId}>
+                <td onClick={handlerSortId}>
                   Id
                   {sortByItems.sortID && <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
                   {!sortByItems.sortID && <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
                 </td>
-                <td onClick={sortFirstName}>
+                <td onClick={handlerSortFirstName}>
                   First name
                   {sortByItems.sortFirst && <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
                   {!sortByItems.sortFirst && <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
@@ -243,18 +245,18 @@ const MainBlock: FC = () => {
                 <td>Phone</td>
                 <td>State</td>
               </tr>
-              {users.map(({firstName, lastName, email, id, phone, adress}, index: number) => {
+              {users.map((item, index: number) => {
                 return (
                   <tr
                     key={index.toString()}
-                    onClick={() => handlerUser(email)}
+                    onClick={() => handlerUser(item)}
                     style={{border: '1px solid black'}}>
-                      <td>{id}</td>
-                      <td>{firstName}</td>
-                      <td>{lastName}</td>
-                      <td>{email}</td>
-                      <td>{phone}</td>
-                      <td>{adress.state}</td>
+                      <td>{item.id}</td>
+                      <td>{item.firstName}</td>
+                      <td>{item.lastName}</td>
+                      <td>{item.email}</td>
+                      <td>{item.phone}</td>
+                      <td>{item.adress.state}</td>
                   </tr>
                 )
               })}
@@ -263,6 +265,10 @@ const MainBlock: FC = () => {
         </div>
         )
       : null}
+      {userItem && <div>
+        {userItem?.email}
+        {userItem?.adress.city}
+      </div>}
     </div>
   );
 };
