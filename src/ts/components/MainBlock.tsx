@@ -5,7 +5,7 @@ import { useTypedSelector } from '../../redux/hooks/useTypedSelector';
 import { getUsers } from '../../redux/store/action-creators/user';
 import { UserActionType } from '../../redux/types/user';
 import { IAllUsers, IUsers, SortType } from '../types/user';
-import UserInfo from './UserInfo';
+import ReactPaginate from 'react-paginate';
 
 export const API_KEY = '1f1508a8866b41e6b9479917c6ee1b34';
 
@@ -21,7 +21,7 @@ const MainBlock: FC = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<SortType>(SortType.popularity);
-  const [page, setPage] = useState<number>(1);
+  const [pageNumber, setPageNumber] = useState<number>(0);
 
   const [usersAll, setUsersAll] = useState<IUsers[]>([]);
 
@@ -208,6 +208,11 @@ const MainBlock: FC = () => {
     setUserItem(item);
   }
 
+  const changePage = (selectedItem: {selected: number}) => {
+    setPageNumber(selectedItem.selected);
+    console.log(pageNumber);
+  };
+
   return (
     <div className='search_wrapper'>
       <form className='search_form' onSubmit={handlerSubmit}>
@@ -224,6 +229,19 @@ const MainBlock: FC = () => {
           {isLoading ? 'Loading...' : 'Search'}
         </button>
       </form>
+      <ReactPaginate
+        pageCount={Math.ceil(users.length / 20)}
+        previousLabel={'Prev'}
+        nextLabel={'Next'}
+        onPageChange={changePage}
+        pageRangeDisplayed={1}
+        marginPagesDisplayed={3}
+        containerClassName={'paginationBtns'}
+        previousLinkClassName={'prevBtn'}
+        nextLinkClassName={'nextBtn'}
+        disabledClassName={'paginationDisabled'}
+        activeClassName={'paginationActive'}
+      />
       {/* {usersAll.length ? <div>{usersAll[0].email}</div>} */}
       {isLoad ? (
         <div>
@@ -245,7 +263,7 @@ const MainBlock: FC = () => {
                 <td>Phone</td>
                 <td>State</td>
               </tr>
-              {users.map((item, index: number) => {
+              {users.slice((pageNumber * 20), (pageNumber * 20 + 20)).map((item, index: number) => {
                 return (
                   <tr
                     key={index.toString()}
