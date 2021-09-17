@@ -1,11 +1,12 @@
 import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useTypedSelector } from '../../redux/hooks/useTypedSelector';
-import { getUsers } from '../../redux/store/action-creators/user';
-import { UserActionType } from '../../redux/types/user';
-import { IUsers, SortType } from '../types/user';
+import { IUsers } from '../types/user';
 import ReactPaginate from 'react-paginate';
 import axios from 'axios';
+
+const stateArray = ['AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'HI', 'IA', 'ID', 'IL', 'IN', 
+'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 
+'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY'];
 
 interface ISotrItems {
   sortID: boolean;
@@ -13,78 +14,59 @@ interface ISotrItems {
   sortLast: boolean;
   sortEmail: boolean;
   sortPhone: boolean;
+  sortState: boolean;
 }
 
 const Main: FC = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [sortBy, setSortBy] = useState<SortType>(SortType.popularity);
   const [pageNumber, setPageNumber] = useState<number>(0);
-
-  const [usersAll, setUsersAll] = useState<IUsers[]>([]);
-
   const [userItem, setUserItem] = useState<IUsers>();
-
-  const [sortUp, setSortUp] = useState(false);
-  const [sortUpName, setSortUpName] = useState(false);
-
+  const [sortStateBoolean, setSortStateBoolean] = useState(false);
   const [sortByItems, setSortByItems] = useState<ISotrItems>(
     {
       sortID: false,
       sortEmail: false,
       sortFirst: false,
       sortLast: false,
-      sortPhone: false
+      sortPhone: false,
+      sortState: false,
     });
 
-  // const {users, isLoad} = useTypedSelector(state => state.user);
   const dispatch = useDispatch();
 
   const [users, setUsers] = useState<IUsers[]>([]);
   const getAllUsers = () => {
     axios.get('https://itrex-react-lab-files.s3.eu-central-1.amazonaws.com/react-test-api.json')
       .then((res) => {
-        setUsers(res.data)
-        console.log(res.data);
+        setUsers(res.data);
       })
-  }
+  };
+  const [sortState, setSortState] = useState('');
 
   useEffect(() => {
-    // dispatch(getUsers());
     getAllUsers();
     setIsLoading(true);
-
   }, [])
 
   const filterUsers = users.filter(user => {
-    return user.firstName.toLowerCase().includes(searchValue.toLowerCase());
-  })
-
+    if (sortStateBoolean) {
+      return user.adress.state.toLowerCase().includes(sortState.toLowerCase());
+    } else {
+      return user.firstName.toLowerCase().includes(searchValue.toLowerCase());
+    }
+  });
 
   const handlerChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchValue(value);
-  }
+  };
   
-  const handlerSubmit = async (event: ChangeEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log(users.find(item => item.firstName.toLowerCase() === searchValue.toLowerCase()))
-    dispatch({
-      type:
-        UserActionType.GET_USERS,
-      payload:
-        (users.find(item => item.firstName.toLowerCase() === searchValue.toLowerCase()))
-    });
-    
-
-  }
   function sortItems(arr: IUsers[], type: string, method: string) {
     switch (type) {
       case 'id':
-        console.log('id');
         if (method === 'asc') {
           arr.sort((a, b) => a.id > b.id ? 1 : -1);
-          console.log('id2');
         } else {
           arr.sort((a, b) => a.id < b.id ? 1 : -1);
         }
@@ -117,111 +99,85 @@ const Main: FC = () => {
           arr.sort((a, b) => a.phone < b.phone ? 1 : -1);
         }
         break;
-    
       default:
         break;
     }
-  }
+  };
 
   const handlerSortId = () => {
     if (sortByItems.sortID) {
       sortItems(users, 'id', 'asc');
-      dispatch({
-        type: UserActionType.GET_USERS, payload: users
-      });
       setSortByItems({
         ...sortByItems, sortID: false
       });
     } else {
       sortItems(users, 'id', 'desc');
-      dispatch({
-        type: UserActionType.GET_USERS, payload: users
-      });
       setSortByItems({
         ...sortByItems, sortID: true
       });
     }
     
-  }
+  };
 
   const handlerSortFirstName = () => {
     if (sortByItems.sortFirst) {
       sortItems(users, 'first', 'asc');
-      dispatch({
-        type: UserActionType.GET_USERS, payload: users
-      });
       setSortByItems({
         ...sortByItems, sortFirst: false
       });
     } else {
       sortItems(users, 'first', 'desc');
-      dispatch({
-        type: UserActionType.GET_USERS, payload: users
-      });
       setSortByItems({
         ...sortByItems, sortFirst: true
       });
     }
-  }
+  };
 
   const handlerSortLastName = () => {
     if (sortByItems.sortLast) {
       sortItems(users, 'last', 'asc');
-      dispatch({
-        type: UserActionType.GET_USERS, payload: users
-      });
       setSortByItems({
         ...sortByItems, sortLast: false
       });
     } else {
       sortItems(users, 'last', 'desc');
-      dispatch({
-        type: UserActionType.GET_USERS, payload: users
-      });
       setSortByItems({
         ...sortByItems, sortLast: true
       });
     }
-  }
+  };
 
   const handlerSortEmail = () => {
     if (sortByItems.sortEmail) {
       sortItems(users, 'email', 'asc');
-      dispatch({
-        type: UserActionType.GET_USERS, payload: users
-      });
       setSortByItems({
         ...sortByItems, sortEmail: false
       });
     } else {
       sortItems(users, 'email', 'desc');
-      dispatch({
-        type: UserActionType.GET_USERS, payload: users
-      });
       setSortByItems({
         ...sortByItems, sortEmail: true
       });
     }
-  }
+  };
 
   const handlerSortPhone = () => {
     if (sortByItems.sortPhone) {
       sortItems(users, 'phone', 'asc');
-      dispatch({
-        type: UserActionType.GET_USERS, payload: users
-      });
       setSortByItems({
         ...sortByItems, sortPhone: false
       });
     } else {
       sortItems(users, 'phone', 'desc');
-      dispatch({
-        type: UserActionType.GET_USERS, payload: users
-      });
       setSortByItems({
         ...sortByItems, sortPhone: true
       });
     }
+  };
+
+  const handlerSortState = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSortState(event.target.value);
+    setSortStateBoolean(true);
   }
 
   const handlerUser = (item: IUsers) => {
@@ -234,19 +190,16 @@ const Main: FC = () => {
 
   return (
     <div className='search_wrapper'>
-      <form className='search_form' onSubmit={handlerSubmit}>
+      <form className='search_form'>
         <div className="search_bar">
           <input
             value={searchValue}
             onChange={handlerChange}
             className="input-search"
             type="text"
-            placeholder="Search bar" />
+            placeholder="Enter user First Name for search..." />
           <img className="input-icon" src="../assets/Search.svg" alt="" />
         </div>
-        <button className='nav_btn' type="submit" disabled={isLoading}>
-          {isLoading ? 'Loading...' : 'Search'}
-        </button>
       </form>
       {isLoading ? (
         <div className="table_block">
@@ -256,43 +209,50 @@ const Main: FC = () => {
                 <td onClick={handlerSortId}>
                   Id
                   {!sortByItems.sortID && 
-                    <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
+                    <img className="arrow_sort" src="../assets/arrow-down.png" />}
                   {sortByItems.sortID &&
-                    <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
+                    <img className="arrow_sort rotate" src="../assets/arrow-down.png" />}
                 </td>
                 <td onClick={handlerSortFirstName}>
                   First name
                   {!sortByItems.sortFirst &&
-                    <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
+                    <img className="arrow_sort" src="../assets/arrow-down.png" />}
                   {sortByItems.sortFirst &&
-                    <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
+                    <img className="arrow_sort rotate" src="../assets/arrow-down.png" />}
                 </td>
                 <td onClick={handlerSortLastName}>
                   Last name
                   {!sortByItems.sortLast &&
-                    <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
+                    <img className="arrow_sort" src="../assets/arrow-down.png" />}
                   {sortByItems.sortLast &&
-                    <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
+                    <img className="arrow_sort rotate" src="../assets/arrow-down.png" />}
                 </td>
                 <td onClick={handlerSortEmail}>
                   Email
                   {!sortByItems.sortEmail &&
-                    <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
+                    <img className="arrow_sort" src="../assets/arrow-down.png" />}
                   {sortByItems.sortEmail &&
-                    <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
+                    <img className="arrow_sort rotate" src="../assets/arrow-down.png" />}
                 </td>
                 <td onClick={handlerSortPhone}>
                   Phone
                   {!sortByItems.sortPhone &&
-                    <img className="arrow_sort" src="../assets/arrow-down.png" alt="" />}
+                    <img className="arrow_sort" src="../assets/arrow-down.png" />}
                   {sortByItems.sortPhone &&
-                    <img className="arrow_sort rotate" src="../assets/arrow-down.png" alt="" />}
+                    <img className="arrow_sort rotate" src="../assets/arrow-down.png" />}
                 </td>
                 <td>
                   State
+                  <select
+                    onChange={handlerSortState}
+                    value={sortState} 
+                    >
+                    <option value=''></option>
+                    <option value=''>all</option>
+                    {stateArray.map(state => <option key={state} value={`${state}`}>{state}</option>)}
+                  </select>
                 </td>
               </tr>
-              {/* {filterUsers.map((item, index: number) => { */}
               {filterUsers.slice((pageNumber * 20), (pageNumber * 20 + 20)).map((item, index: number) => {
                 return (
                   <tr
