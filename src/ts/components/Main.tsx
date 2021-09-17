@@ -314,7 +314,7 @@ const Main: FC = () => {
         )
       : null}
       {filterUsers.length > 10 ? <ReactPaginate
-        pageCount={Math.ceil(users.length / 20)}
+        pageCount={Math.ceil(filterUsers.length / 20)}
         previousLabel={'Prev'}
         nextLabel={'Next'}
         onPageChange={changePage}
