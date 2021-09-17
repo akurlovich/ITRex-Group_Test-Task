@@ -5,6 +5,7 @@ import { getUsers } from '../../redux/store/action-creators/user';
 import { UserActionType } from '../../redux/types/user';
 import { IUsers, SortType } from '../types/user';
 import ReactPaginate from 'react-paginate';
+import axios from 'axios';
 
 interface ISotrItems {
   sortID: boolean;
@@ -14,7 +15,7 @@ interface ISotrItems {
   sortPhone: boolean;
 }
 
-const MainBlock: FC = () => {
+const Main: FC = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<SortType>(SortType.popularity);
@@ -36,13 +37,28 @@ const MainBlock: FC = () => {
       sortPhone: false
     });
 
-  const {users, isLoad} = useTypedSelector(state => state.user);
+  // const {users, isLoad} = useTypedSelector(state => state.user);
   const dispatch = useDispatch();
 
+  const [users, setUsers] = useState<IUsers[]>([]);
+  const getAllUsers = () => {
+    axios.get('https://itrex-react-lab-files.s3.eu-central-1.amazonaws.com/react-test-api.json')
+      .then((res) => {
+        setUsers(res.data)
+        console.log(res.data);
+      })
+  }
+
   useEffect(() => {
-    dispatch(getUsers());
+    // dispatch(getUsers());
+    getAllUsers();
+    setIsLoading(true);
 
   }, [])
+
+  const filterUsers = users.filter(user => {
+    return user.firstName.toLowerCase().includes(searchValue.toLowerCase());
+  })
 
 
   const handlerChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -232,7 +248,7 @@ const MainBlock: FC = () => {
           {isLoading ? 'Loading...' : 'Search'}
         </button>
       </form>
-      {isLoad ? (
+      {isLoading ? (
         <div className="table_block">
           <table className="table_block__main" >
             <tbody>
@@ -276,8 +292,8 @@ const MainBlock: FC = () => {
                   State
                 </td>
               </tr>
-              {users.map((item, index: number) => {
-              // {users.slice((pageNumber * 20), (pageNumber * 20 + 20)).map((item, index: number) => {
+              {/* {filterUsers.map((item, index: number) => { */}
+              {filterUsers.slice((pageNumber * 20), (pageNumber * 20 + 20)).map((item, index: number) => {
                 return (
                   <tr
                     key={index.toString()}
@@ -297,7 +313,7 @@ const MainBlock: FC = () => {
         </div>
         )
       : null}
-      <ReactPaginate
+      {filterUsers.length > 10 ? <ReactPaginate
         pageCount={Math.ceil(users.length / 20)}
         previousLabel={'Prev'}
         nextLabel={'Next'}
@@ -309,7 +325,7 @@ const MainBlock: FC = () => {
         nextLinkClassName={'nextBtn'}
         disabledClassName={'paginationDisabled'}
         activeClassName={'paginationActive'}
-      />
+      /> : null}
       {userItem && 
         <div className='user_block'>
           <h2>Profile info:</h2>
@@ -343,4 +359,4 @@ const MainBlock: FC = () => {
   );
 };
 
-export default MainBlock;
+export default Main;

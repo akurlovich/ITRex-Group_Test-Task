@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { Dispatch } from "react"
 import axiosInstance from "../../../services/api";
-import { API_KEY } from "../../../ts/components/MainBlock";
 import { IUsers } from "../../../ts/types/user";
 import { IUserArticle, IUserState, UserAction, UserActionType } from "../../types/user"
 
@@ -21,9 +20,8 @@ export const getUsers = () => {
         arr.sort((a, b) => a.id > b.id ? 1 : -1);
       }
       sortByAge(result);
-      dispatch({type: UserActionType.GET_USERS, payload: result})
-      console.log(res.data)
-      dispatch({type: UserActionType.GET_USERS_SUCCESS, payload: true})
+      dispatch({type: UserActionType.GET_USERS, payload: result});
+      dispatch({type: UserActionType.GET_USERS_SUCCESS, payload: true});
     } catch (error) {
 
     }
@@ -47,9 +45,8 @@ export const getUsersUp = () => {
         arr.sort((a, b) => a.id < b.id ? 1 : -1);
       }
       sortByAge(result);
-      dispatch({type: UserActionType.GET_USERS, payload: result})
-      console.log(res.data)
-      dispatch({type: UserActionType.GET_USERS_SUCCESS, payload: true})
+      dispatch({type: UserActionType.GET_USERS, payload: result});
+      dispatch({type: UserActionType.GET_USERS_SUCCESS, payload: true});
     } catch (error) {
 
     }
