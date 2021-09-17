@@ -210,7 +210,6 @@ const MainBlock: FC = () => {
 
   const changePage = (selectedItem: {selected: number}) => {
     setPageNumber(selectedItem.selected);
-    console.log(pageNumber);
   };
 
   return (
@@ -229,22 +228,10 @@ const MainBlock: FC = () => {
           {isLoading ? 'Loading...' : 'Search'}
         </button>
       </form>
-      <ReactPaginate
-        pageCount={Math.ceil(users.length / 20)}
-        previousLabel={'Prev'}
-        nextLabel={'Next'}
-        onPageChange={changePage}
-        pageRangeDisplayed={1}
-        marginPagesDisplayed={3}
-        containerClassName={'paginationBtns'}
-        previousLinkClassName={'prevBtn'}
-        nextLinkClassName={'nextBtn'}
-        disabledClassName={'paginationDisabled'}
-        activeClassName={'paginationActive'}
-      />
+      
       {/* {usersAll.length ? <div>{usersAll[0].email}</div>} */}
       {isLoad ? (
-        <div>
+        <div className="table_block">
           <table style={{border: '1px solid black', borderCollapse: 'collapse'}}>
             <tbody>
               <tr>
@@ -283,10 +270,48 @@ const MainBlock: FC = () => {
         </div>
         )
       : null}
-      {userItem && <div>
-        {userItem?.email}
-        {userItem?.adress.city}
-      </div>}
+      <ReactPaginate
+        pageCount={Math.ceil(users.length / 20)}
+        previousLabel={'Prev'}
+        nextLabel={'Next'}
+        onPageChange={changePage}
+        pageRangeDisplayed={1}
+        marginPagesDisplayed={3}
+        containerClassName={'paginationBtns'}
+        previousLinkClassName={'prevBtn'}
+        nextLinkClassName={'nextBtn'}
+        disabledClassName={'paginationDisabled'}
+        activeClassName={'paginationActive'}
+      />
+      {userItem && 
+        <div className='user_block'>
+          <h2>Profile info:</h2>
+          <div className='user_block__items'>
+            <h3>Selected profile:</h3>
+            <div className='user_block__items__items-info'>{userItem.firstName}</div>
+            <div className='user_block__items__items-info'>{userItem.lastName}</div>
+          </div>
+          <div className='user_block__items'>
+            <h3>Description</h3>
+            <div className="user_block__items__items-info">{userItem.description}</div>
+          </div>
+          <div className='user_block__items'>
+            <h3>Address:</h3>
+            <div className="user_block__items__items-info">{userItem.adress.streetAddress}</div>
+          </div>
+          <div className='user_block__items'>
+            <h3>City:</h3>
+            <div className="user_block__items__items-info">{userItem.adress.city}</div>
+          </div>
+          <div className='user_block__items'>
+            <h3>State:</h3>
+            <div className="user_block__items__items-info">{userItem.adress.state}</div>
+          </div>
+          <div className='user_block__items'>
+            <h3>Index:</h3>
+            <div className="user_block__items__items-info">{userItem.adress.zip}</div>
+          </div>
+        </div>}
     </div>
   );
 };
