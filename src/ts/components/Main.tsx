@@ -1,21 +1,11 @@
 import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { IUsers } from '../types/user';
+import { ISotrItems, IUsers } from '../types/user';
 import ReactPaginate from 'react-paginate';
 import axios from 'axios';
-
-const stateArray = ['AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'HI', 'IA', 'ID', 'IL', 'IN', 
-'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 
-'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY'];
-
-interface ISotrItems {
-  sortID: boolean;
-  sortFirst: boolean;
-  sortLast: boolean;
-  sortEmail: boolean;
-  sortPhone: boolean;
-  sortState: boolean;
-}
+import UserInfo from './UserInfo';
+import sortItems from '../../services/sortItems';
+import stateArray from '../../services/dataInfo';
 
 const Main: FC = () => {
   const [searchValue, setSearchValue] = useState<string>('');
@@ -32,8 +22,6 @@ const Main: FC = () => {
       sortPhone: false,
       sortState: false,
     });
-
-  const dispatch = useDispatch();
 
   const [users, setUsers] = useState<IUsers[]>([]);
   const getAllUsers = () => {
@@ -62,48 +50,6 @@ const Main: FC = () => {
     setSearchValue(value);
   };
   
-  function sortItems(arr: IUsers[], type: string, method: string) {
-    switch (type) {
-      case 'id':
-        if (method === 'asc') {
-          arr.sort((a, b) => a.id > b.id ? 1 : -1);
-        } else {
-          arr.sort((a, b) => a.id < b.id ? 1 : -1);
-        }
-        break;
-      case 'first':
-        if (method === 'asc') {
-          arr.sort((a, b) => a.firstName > b.firstName ? 1 : -1);
-        } else {
-          arr.sort((a, b) => a.firstName < b.firstName ? 1 : -1);
-        }
-        break;
-      case 'last':
-        if (method === 'asc') {
-          arr.sort((a, b) => a.lastName > b.lastName ? 1 : -1);
-        } else {
-          arr.sort((a, b) => a.lastName < b.lastName ? 1 : -1);
-        }
-        break;
-      case 'email':
-        if (method === 'asc') {
-          arr.sort((a, b) => a.email > b.email ? 1 : -1);
-        } else {
-          arr.sort((a, b) => a.email < b.email ? 1 : -1);
-        }
-        break;
-      case 'phone':
-        if (method === 'asc') {
-          arr.sort((a, b) => a.phone > b.phone ? 1 : -1);
-        } else {
-          arr.sort((a, b) => a.phone < b.phone ? 1 : -1);
-        }
-        break;
-      default:
-        break;
-    }
-  };
-
   const handlerSortId = () => {
     if (sortByItems.sortID) {
       sortItems(users, 'id', 'asc');
@@ -116,7 +62,6 @@ const Main: FC = () => {
         ...sortByItems, sortID: true
       });
     }
-    
   };
 
   const handlerSortFirstName = () => {
@@ -273,48 +218,19 @@ const Main: FC = () => {
         </div>
         )
       : null}
-      {filterUsers.length > 10 ? <ReactPaginate
-        pageCount={Math.ceil(filterUsers.length / 20)}
-        previousLabel={'Prev'}
-        nextLabel={'Next'}
-        onPageChange={changePage}
-        pageRangeDisplayed={1}
-        marginPagesDisplayed={3}
-        containerClassName={'paginationBtns'}
-        previousLinkClassName={'prevBtn'}
-        nextLinkClassName={'nextBtn'}
-        disabledClassName={'paginationDisabled'}
-        activeClassName={'paginationActive'}
-      /> : null}
-      {userItem && 
-        <div className='user_block'>
-          <h2>Profile info:</h2>
-          <div className='user_block__items'>
-            <h3>Selected profile:</h3>
-            <div className='user_block__items__items-info'>{userItem.firstName}</div>
-            <div className='user_block__items__items-info'>{userItem.lastName}</div>
-          </div>
-          <div className='user_block__items'>
-            <h3>Description</h3>
-            <div className="user_block__items__items-info">{userItem.description}</div>
-          </div>
-          <div className='user_block__items'>
-            <h3>Address:</h3>
-            <div className="user_block__items__items-info">{userItem.adress.streetAddress}</div>
-          </div>
-          <div className='user_block__items'>
-            <h3>City:</h3>
-            <div className="user_block__items__items-info">{userItem.adress.city}</div>
-          </div>
-          <div className='user_block__items'>
-            <h3>State:</h3>
-            <div className="user_block__items__items-info">{userItem.adress.state}</div>
-          </div>
-          <div className='user_block__items'>
-            <h3>Index:</h3>
-            <div className="user_block__items__items-info">{userItem.adress.zip}</div>
-          </div>
-        </div>}
+      {filterUsers.length > 20 ? 
+        <ReactPaginate
+          pageCount={Math.ceil(filterUsers.length / 20)}
+          previousLabel={'Prev'}
+          nextLabel={'Next'}
+          onPageChange={changePage}
+          pageRangeDisplayed={1}
+          marginPagesDisplayed={3}
+          containerClassName={'paginationBtns'}
+          disabledClassName={'paginationDisabled'}
+          activeClassName={'paginationActive'}
+        /> : null}
+      <UserInfo userInfo={userItem}/>
     </div>
   );
 };

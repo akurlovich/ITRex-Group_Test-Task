@@ -11,7 +11,16 @@ export interface IUsers {
   id: number,
   lastName: string,
   phone: string,
-}
+};
+
+export interface ISotrItems {
+  sortID: boolean;
+  sortFirst: boolean;
+  sortLast: boolean;
+  sortEmail: boolean;
+  sortPhone: boolean;
+  sortState: boolean;
+};
 
 
 export interface IArticles {
@@ -24,11 +33,4 @@ export interface IArticles {
   url: string
   urlToImage: string
 }
-export interface IAllUsers {
-  allUsers: IUsers[]
-}
-export enum SortType {
-  relevancy = 'relevancy',
-  popularity = 'popularity',
-  publishedAt = 'publishedAt',
-}
+

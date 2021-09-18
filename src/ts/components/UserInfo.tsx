@@ -1,40 +1,44 @@
 import React, { FC } from 'react';
-import { IArticles, IUsers } from '../types/user';
+import { IUsers } from '../types/user';
 
-interface IArticlesBlock {
-  articles: IUsers[];
-}
+interface IUserInfo {
+  userInfo: IUsers | undefined;
+};
 
-const UserInfo: FC<IArticlesBlock> = ({articles}) => {
+const UserInfo: FC<IUserInfo> = ({userInfo}) => {
 
   return (
-    <div>
-      {articles.length ? (
-        <div>
-          <table style={{border: '1px solid black'}}>
-            <tr>
-              <td>Title</td>
-              <td>Author</td>
-              <td>
-                Published at
-              </td>
-              <td>Image</td>
-            </tr>
-            {/* {articles.map((item, index) => {
-              return ( */}
-                {/* <tr key={articles[0].id} >
-                    <td>{articles[0].adress}</td>
-                    <td>{articles[0].firstName}</td>
-                    <td>{articles[0].lastName}</td>
-                    
-                </tr> */}
-              {/* )
-            })} */}
-          </table>
-        </div>
-        )
-      : null}
-    </div>
+    <>
+      {userInfo && 
+        <div className='user_block'>
+          <h2>Profile info:</h2>
+          <div className='user_block__items'>
+            <h3>Selected profile:</h3>
+            <div className='user_block__items__items-info'>{userInfo.firstName}</div>
+            <div className='user_block__items__items-info'>{userInfo.lastName}</div>
+          </div>
+          <div className='user_block__items'>
+            <h3>Description</h3>
+            <div className="user_block__items__items-info">{userInfo.description}</div>
+          </div>
+          <div className='user_block__items'>
+            <h3>Address:</h3>
+            <div className="user_block__items__items-info">{userInfo.adress.streetAddress}</div>
+          </div>
+          <div className='user_block__items'>
+            <h3>City:</h3>
+            <div className="user_block__items__items-info">{userInfo.adress.city}</div>
+          </div>
+          <div className='user_block__items'>
+            <h3>State:</h3>
+            <div className="user_block__items__items-info">{userInfo.adress.state}</div>
+          </div>
+          <div className='user_block__items'>
+            <h3>Index:</h3>
+            <div className="user_block__items__items-info">{userInfo.adress.zip}</div>
+          </div>
+        </div>}
+    </>
   );
 };
 
