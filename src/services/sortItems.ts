@@ -37,6 +37,13 @@ function sortItems(arr: IUsers[], type: string, method: string) {
         arr.sort((a, b) => a.phone < b.phone ? 1 : -1);
       }
       break;
+    case 'state':
+      if (method === 'asc') {
+        arr.sort((a, b) => a.adress.state > b.adress.state ? 1 : -1);
+      } else {
+        arr.sort((a, b) => a.adress.state < b.adress.state ? 1 : -1);
+      }
+      break;
     default:
       break;
   }

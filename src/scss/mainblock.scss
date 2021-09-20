@@ -51,6 +51,7 @@
 .table_block {
   display: flex;
   justify-content: center;
+  flex-direction: column;
 
   &__main {
     border: 1px solid black;
@@ -73,6 +74,16 @@
     td {
       padding: 2px;
     }
+  }
+
+  &__select {
+    width: 110px;
+    align-self: flex-end;
+    margin-bottom: 5px;
+    border-radius: 2px;
+    border: 1px solid #2b2eff;
+    color: #2b2eff;
+    cursor: pointer;
   }
 }
 .user_block {

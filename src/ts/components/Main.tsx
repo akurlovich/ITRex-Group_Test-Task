@@ -18,6 +18,7 @@ const Main: FC = () => {
       sortFirst: false,
       sortLast: false,
       sortPhone: false,
+      sortByState: false,
       sortState: false,
     });
 
@@ -128,17 +129,27 @@ const Main: FC = () => {
     }
   };
 
+  const handlerSortByState = () => {
+    if (sortByItems.sortByState) {
+      sortItems(users, 'state', 'asc');
+      setSortByItems({
+        ...sortByItems, sortByState: false
+      });
+    } else {
+      sortItems(users, 'state', 'desc');
+      setSortByItems({
+        ...sortByItems, sortByState: true
+      });
+    }
+  };
+
   const handlerSortState = (event: ChangeEvent<HTMLSelectElement>) => {
     setSortState(event.target.value);
     setSortStateBoolean(true);
-  }
+  };
 
   const handlerUser = (item: IUsers) => {
     setUserItem(item);
-  }
-
-  const changePage = (selectedItem: {selected: number}) => {
-    setPageNumber(selectedItem.selected);
   };
 
   const handlerChangePage = (index: number) => {
@@ -174,6 +185,15 @@ const Main: FC = () => {
       </form>
       {isLoading ? (
         <div className="table_block">
+          <select
+            className='table_block__select'
+            onChange={handlerSortState}
+            value={sortState} 
+            >
+            <option value=''>Filter by state:</option>
+            <option value=''>all</option>
+            {stateArray.map(state => <option key={state} value={`${state}`}>{state}</option>)}
+          </select>
           <table className="table_block__main" >
             <tbody>
               <tr className="table_block__title">
@@ -212,16 +232,20 @@ const Main: FC = () => {
                   {sortByItems.sortPhone &&
                     <img className="arrow_sort rotate" src="../assets/arrow-down.png" />}
                 </td>
-                <td>
+                <td onClick={handlerSortByState}>
                   State
-                  <select
+                  {!sortByItems.sortByState &&
+                    <img className="arrow_sort" src="../assets/arrow-down.png" />}
+                  {sortByItems.sortByState &&
+                    <img className="arrow_sort rotate" src="../assets/arrow-down.png" />}
+                  {/* <select
                     onChange={handlerSortState}
                     value={sortState} 
                     >
                     <option value=''></option>
                     <option value=''>all</option>
                     {stateArray.map(state => <option key={state} value={`${state}`}>{state}</option>)}
-                  </select>
+                  </select> */}
                 </td>
               </tr>
               {filterUsers.slice((pageNumber * 20), (pageNumber * 20 + 20)).map((item, index: number) => {

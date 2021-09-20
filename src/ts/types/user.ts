@@ -19,6 +19,7 @@ export interface ISotrItems {
   sortLast: boolean;
   sortEmail: boolean;
   sortPhone: boolean;
+  sortByState: boolean;
   sortState: boolean;
 };
 
