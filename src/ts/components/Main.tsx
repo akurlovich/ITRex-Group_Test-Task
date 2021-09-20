@@ -32,11 +32,12 @@ const Main: FC = () => {
   };
   const [sortState, setSortState] = useState('');
 
+  
   useEffect(() => {
     getAllUsers();
     setIsLoading(true);
   }, [])
-
+  
   const filterUsers = users.filter(user => {
     if (sortStateBoolean) {
       return user.adress.state.toLowerCase().includes(sortState.toLowerCase());
@@ -45,6 +46,15 @@ const Main: FC = () => {
     }
   });
 
+  const pageCount: number = Math.ceil(filterUsers.length / 20);
+  const pageArray = new Array();
+
+  for (let i = 0; i < pageCount; i++) {
+    pageArray.push(i + 1)
+  }
+
+  console.log('page', pageArray);
+  
   const handlerChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchValue(value);
@@ -133,6 +143,11 @@ const Main: FC = () => {
     setPageNumber(selectedItem.selected);
   };
 
+  const handlerChangePage = (index: number) => {
+    setPageNumber(index + 1);
+    console.log(index);
+  }
+
   return (
     <div className='search_wrapper'>
       <form className='search_form'>
@@ -219,17 +234,39 @@ const Main: FC = () => {
         )
       : null}
       {filterUsers.length > 20 ? 
-        <ReactPaginate
-          pageCount={Math.ceil(filterUsers.length / 20)}
-          previousLabel={'Prev'}
-          nextLabel={'Next'}
-          onPageChange={changePage}
-          pageRangeDisplayed={1}
-          marginPagesDisplayed={3}
-          containerClassName={'paginationBtns'}
-          disabledClassName={'paginationDisabled'}
-          activeClassName={'paginationActive'}
-        /> : null}
+        <>
+          <div>
+            <ul className='paginationBtns'>
+              <li>
+                <a>Prev</a>
+              </li>
+              {pageArray.map((item, index) => {
+                return (
+                  <li
+                    key={index.toString()}
+                    onClick={() => handlerChangePage(index)}
+                    >
+                    <a>{item}</a>
+                  </li>
+                )
+              })}
+              <li>
+                <a>Next</a>
+              </li>
+            </ul>
+          </div>
+          <ReactPaginate
+            pageCount={Math.ceil(filterUsers.length / 20)}
+            previousLabel={'Prev'}
+            nextLabel={'Next'}
+            onPageChange={changePage}
+            pageRangeDisplayed={1}
+            marginPagesDisplayed={3}
+            containerClassName={'paginationBtns'}
+            disabledClassName={'paginationDisabled'}
+            activeClassName={'paginationActive'}
+          />
+        </>: null}
       <UserInfo userInfo={userItem}/>
     </div>
   );
