@@ -144,9 +144,29 @@ const Main: FC = () => {
   };
 
   const handlerChangePage = (index: number) => {
-    setPageNumber(index + 1);
+    setPageNumber(index);
     console.log(index);
-  }
+  };
+
+  const handlerChangePageNext = () => {
+    // console.log(pageCount, 'count');
+    // console.log(pageNumber, 'number');
+    if (pageNumber >= (pageCount - 1)) {
+      console.log('max');
+      return;
+    }
+    setPageNumber(pageNumber + 1)
+  };
+
+  const handlerChangePagePrev = () => {
+    // console.log(pageCount, 'count');
+    // console.log(pageNumber, 'number');
+    if (pageNumber <= 0) {
+      console.log('min');
+      return;
+    }
+    setPageNumber(pageNumber - 1)
+  };
 
   return (
     <div className='search_wrapper'>
@@ -237,12 +257,15 @@ const Main: FC = () => {
         <>
           <div>
             <ul className='paginationBtns'>
-              <li>
+              <li
+                className={pageNumber == 0 ? 'paginationDisabled' : ''}
+                onClick={handlerChangePagePrev}>
                 <a>Prev</a>
               </li>
               {pageArray.map((item, index) => {
                 return (
                   <li
+                    className={pageNumber == index ? 'paginationActive' : ''}
                     key={index.toString()}
                     onClick={() => handlerChangePage(index)}
                     >
@@ -250,12 +273,14 @@ const Main: FC = () => {
                   </li>
                 )
               })}
-              <li>
+              <li
+                className={pageNumber >= (pageCount - 1) ? 'paginationDisabled' : ''}
+                onClick={handlerChangePageNext}>
                 <a>Next</a>
               </li>
             </ul>
           </div>
-          <ReactPaginate
+          {/* <ReactPaginate
             pageCount={Math.ceil(filterUsers.length / 20)}
             previousLabel={'Prev'}
             nextLabel={'Next'}
@@ -265,7 +290,7 @@ const Main: FC = () => {
             containerClassName={'paginationBtns'}
             disabledClassName={'paginationDisabled'}
             activeClassName={'paginationActive'}
-          />
+          /> */}
         </>: null}
       <UserInfo userInfo={userItem}/>
     </div>
