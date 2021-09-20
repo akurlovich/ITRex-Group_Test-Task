@@ -1,7 +1,5 @@
 import React, { ChangeEvent, FC, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { ISotrItems, IUsers } from '../types/user';
-import ReactPaginate from 'react-paginate';
 import axios from 'axios';
 import UserInfo from './UserInfo';
 import sortItems from '../../services/sortItems';
@@ -145,24 +143,17 @@ const Main: FC = () => {
 
   const handlerChangePage = (index: number) => {
     setPageNumber(index);
-    console.log(index);
   };
 
   const handlerChangePageNext = () => {
-    // console.log(pageCount, 'count');
-    // console.log(pageNumber, 'number');
     if (pageNumber >= (pageCount - 1)) {
-      console.log('max');
       return;
     }
     setPageNumber(pageNumber + 1)
   };
 
   const handlerChangePagePrev = () => {
-    // console.log(pageCount, 'count');
-    // console.log(pageNumber, 'number');
     if (pageNumber <= 0) {
-      console.log('min');
       return;
     }
     setPageNumber(pageNumber - 1)
@@ -280,17 +271,6 @@ const Main: FC = () => {
               </li>
             </ul>
           </div>
-          {/* <ReactPaginate
-            pageCount={Math.ceil(filterUsers.length / 20)}
-            previousLabel={'Prev'}
-            nextLabel={'Next'}
-            onPageChange={changePage}
-            pageRangeDisplayed={1}
-            marginPagesDisplayed={3}
-            containerClassName={'paginationBtns'}
-            disabledClassName={'paginationDisabled'}
-            activeClassName={'paginationActive'}
-          /> */}
         </>: null}
       <UserInfo userInfo={userItem}/>
     </div>
