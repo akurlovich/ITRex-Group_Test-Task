@@ -143,6 +143,7 @@ const Main: FC = () => {
   };
 
   const handlerSortState = (event: ChangeEvent<HTMLSelectElement>) => {
+    setPageNumber(0);
     setSortState(event.target.value);
     setSortStateBoolean(true);
   };
