@@ -51,8 +51,6 @@ const Main: FC = () => {
   for (let i = 0; i < pageCount; i++) {
     pageArray.push(i + 1)
   }
-
-  console.log('page', pageArray);
   
   const handlerChange = (event: ChangeEvent<HTMLInputElement>) => {
     setPageNumber(0);
@@ -239,14 +237,6 @@ const Main: FC = () => {
                     <img className="arrow_sort" src="../assets/arrow-down.png" />}
                   {sortByItems.sortByState &&
                     <img className="arrow_sort rotate" src="../assets/arrow-down.png" />}
-                  {/* <select
-                    onChange={handlerSortState}
-                    value={sortState} 
-                    >
-                    <option value=''></option>
-                    <option value=''>all</option>
-                    {stateArray.map(state => <option key={state} value={`${state}`}>{state}</option>)}
-                  </select> */}
                 </td>
               </tr>
               {filterUsers.slice((pageNumber * 20), (pageNumber * 20 + 20)).map((item, index: number) => {
