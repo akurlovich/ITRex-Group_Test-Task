@@ -55,6 +55,7 @@ const Main: FC = () => {
   console.log('page', pageArray);
   
   const handlerChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setPageNumber(0);
     const value = event.target.value;
     setSearchValue(value);
   };
